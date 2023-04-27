@@ -5,5 +5,6 @@ urlpatterns = [
     path('task', TaskView.as_view()),
     path('task/<int:pk>', TaskView.as_view()),
     path('user/<str:user>', UserView.as_view(), name='user-link'),
-    path('user', CreateUserView.as_view()),
+    path('create/', CreateUserView.as_view()),
+    path('userlogin/', UserView.as_view())
 ]

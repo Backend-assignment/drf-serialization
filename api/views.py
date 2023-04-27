@@ -8,6 +8,7 @@ from .models import Task
 from .serializers import TaskSerializer, UserSerializer
 # Import the user model
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 class TaskView(APIView):
  
@@ -62,6 +63,18 @@ class UserView(APIView):
         serializer = UserSerializer(user)
         data = serializer.data
         return Response(data)
+    def post(self, request: Request) -> Response:
+        '''create user'''
+        data = request.data
+        username = data['username']
+        # Check if the user exists
+        user = User.objects.filter(username=username)
+        if user:
+            return Response({'error': 'user already exists'})
+        else:
+            return Response({'error': 'user does not exist'})
+     
+    
     
 
 class CreateUserView(APIView):
@@ -75,7 +88,9 @@ class CreateUserView(APIView):
             return Response({'error': 'user already exists'})
         password = data['password']
         user = User.objects.create_user(username=username, password=password)
-        print(user)
+        # Create a token
+        token = Token.objects.create(user=user)
+        data = {'token': token.key} # Return the token
         return Response(data)
      
   
